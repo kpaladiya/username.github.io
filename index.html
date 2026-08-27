@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A neon three-dimensional digital experience.">
+  <title>Neon Horizon</title>
+  <style>
+    :root {
+      --ink: #050510;
+      --panel: rgba(10, 10, 30, 0.62);
+      --cyan: #5dfcff;
+      --violet: #b06cff;
+      --text: #f5f4ff;
+      --muted: #a9abc5;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--text);
+      background: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      overflow-x: hidden;
+    }
+
+    #scene {
+      position: fixed;
+      z-index: -2;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .noise {
+      position: fixed;
+      z-index: -1;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0.22;
+      background-image: radial-gradient(rgba(255,255,255,.24) .5px, transparent .7px);
+      background-size: 5px 5px;
+      mask-image: linear-gradient(to bottom, transparent, black 30%, black 70%, transparent);
+    }
+
+    header {
+      position: fixed;
+      z-index: 10;
+      top: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 1.4rem clamp(1.25rem, 5vw, 5rem);
+      background: linear-gradient(to bottom, rgba(5,5,16,.82), transparent);
+    }
+
+    .brand {
+      color: var(--text);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      text-decoration: none;
+      text-transform: uppercase;
+    }
+
+    .brand span { color: var(--cyan); }
+
+    nav { display: flex; gap: clamp(0.5rem, 2vw, 1.8rem); }
+
+    nav a {
+      display: inline-block;
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transform-style: preserve-3d;
+      transition: color .25s ease, transform .25s ease, text-shadow .25s ease;
+    }
+
+    /* Tilt and lift each navigation item into the 3D scene. */
+    nav a:hover, nav a:focus-visible {
+      color: var(--cyan);
+      outline: none;
+      text-shadow: 0 0 12px var(--cyan);
+      transform: perspective(300px) translateZ(22px) rotateX(-18deg) rotateY(12deg);
+    }
+
+    main { position: relative; }
+
+    section {
+      display: flex;
+      align-items: center;
+      min-height: 100vh;
+      padding: 7rem clamp(1.25rem, 12vw, 12rem);
+    }
+
+    .hero { min-height: 100svh; }
+
+    .hero-content { max-width: 780px; }
+
+    .eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      margin: 0 0 1.25rem;
+      color: var(--cyan);
+      font-size: .7rem;
+      font-weight: 800;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      width: 2.3rem;
+      height: 1px;
+      content: "";
+      background: currentColor;
+      box-shadow: 0 0 9px var(--cyan);
+    }
+
+    h1, h2, p { margin-top: 0; }
+
+    h1 {
+      max-width: 760px;
+      margin-bottom: 1.25rem;
+      font-size: clamp(3.2rem, 9vw, 8.2rem);
+      font-weight: 850;
+      letter-spacing: -0.07em;
+      line-height: .87;
+    }
+
+    h1 em {
+      color: transparent;
+      font-style: normal;
+      -webkit-text-stroke: 1.5px var(--violet);
+      text-shadow: 0 0 26px rgba(176,108,255,.44);
+    }
+
+    .lead {
+      max-width: 510px;
+      margin-bottom: 2rem;
+      color: var(--muted);
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      line-height: 1.65;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      gap: .8rem;
+      padding: 1rem 1.35rem;
+      border: 1px solid rgba(93,252,255,.75);
+      border-radius: 2px;
+      color: #061119;
+      background: var(--cyan);
+      box-shadow: 0 0 22px rgba(93,252,255,.3);
+      font-size: .72rem;
+      font-weight: 850;
+      letter-spacing: .16em;
+      text-decoration: none;
+      text-transform: uppercase;
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+
+    .button:hover, .button:focus-visible {
+      outline: none;
+      box-shadow: 0 0 40px rgba(93,252,255,.64);
+      transform: translateY(-4px);
+    }
+
+    .button::after { content: "↗"; font-size: 1.15rem; line-height: .5; }
+
+    .scroll-prompt {
+      position: absolute;
+      bottom: 2.5rem;
+      left: clamp(1.25rem, 5vw, 5rem);
+      color: var(--muted);
+      font-size: .65rem;
+      font-weight: 700;
+      letter-spacing: .16em;
+      text-transform: uppercase;
+      writing-mode: vertical-rl;
+    }
+
+    .scroll-prompt::after {
+      display: block;
+      width: 1px;
+      height: 2.6rem;
+      margin: .7rem auto 0;
+      content: "";
+      background: linear-gradient(var(--cyan), transparent);
+    }
+
+    .content-card {
+      width: min(100%, 560px);
+      margin-left: auto;
+      padding: clamp(1.6rem, 4vw, 3rem);
+      border: 1px solid rgba(166,173,255,.19);
+      background: var(--panel);
+      box-shadow: 0 20px 60px rgba(0,0,0,.25);
+      backdrop-filter: blur(12px);
+    }
+
+    h2 {
+      margin-bottom: 1rem;
+      font-size: clamp(2.2rem, 5vw, 4.6rem);
+      letter-spacing: -.055em;
+      line-height: .95;
+    }
+
+    .content-card p {
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid rgba(166,173,255,.2);
+    }
+
+    .stat strong { display: block; color: var(--cyan); font-size: 1.45rem; }
+    .stat span { color: var(--muted); font-size: .66rem; letter-spacing: .08em; text-transform: uppercase; }
+
+    .alignment-right { justify-content: flex-end; }
+    .alignment-left { justify-content: flex-start; }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1.5rem clamp(1.25rem, 5vw, 5rem);
+      color: var(--muted);
+      font-size: .68rem;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 620px) {
+      header { padding-top: 1.15rem; }
+      nav { gap: .7rem; }
+      nav a { font-size: .58rem; letter-spacing: .07em; }
+      .brand { font-size: .68rem; }
+      section { padding-inline: 1.25rem; }
+      .content-card { margin: auto; }
+      .scroll-prompt { display: none; }
+      .stats { gap: .55rem; }
+      .stat strong { font-size: 1.18rem; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after { transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="scene" aria-hidden="true"></canvas>
+  <div class="noise" aria-hidden="true"></div>
+
+  <header>
+    <a class="brand" href="#home">Neon<span>.</span>Horizon</a>
+    <nav aria-label="Main navigation">
+      <a href="#home">Home</a>
+      <a href="#vision">Vision</a>
+      <a href="#signals">Signals</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="hero-content">
+        <p class="eyebrow">Beyond the familiar</p>
+        <h1>Enter the <em>next</em> dimension.</h1>
+        <p class="lead">We shape luminous digital worlds for ideas that refuse to stay flat. Scroll to move through the signal.</p>
+        <a class="button" href="#vision">Explore the future</a>
+      </div>
+      <span class="scroll-prompt">Scroll to navigate</span>
+    </section>
+
+    <section class="alignment-right" id="vision">
+      <article class="content-card">
+        <p class="eyebrow">01 / Vision</p>
+        <h2>Design with depth.</h2>
+        <p>Every interaction is a spatial moment. We pair clear intention with magnetic motion to make technology feel more human.</p>
+        <div class="stats" aria-label="Studio statistics">
+          <div class="stat"><strong>∞</strong><span>Possibilities</span></div>
+          <div class="stat"><strong>03</strong><span>Dimensions</span></div>
+          <div class="stat"><strong>01</strong><span>Direction</span></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="alignment-left" id="signals">
+      <article class="content-card">
+        <p class="eyebrow">02 / Signals</p>
+        <h2>Make noise that matters.</h2>
+        <p>From brand systems to immersive launches, we transform ambitious signals into experiences built to be remembered.</p>
+        <a class="button" href="#contact">Start a project</a>
+      </article>
+    </section>
+
+    <section class="alignment-right" id="contact">
+      <article class="content-card">
+        <p class="eyebrow">03 / Contact</p>
+        <h2>Ready when you are.</h2>
+        <p>New perspectives begin with a conversation. Send us a signal and let us build what comes next.</p>
+        <a class="button" href="mailto:hello@example.com">Send a signal</a>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <span>© 2026 Neon Horizon</span>
+    <span>Built beyond the plane</span>
+  </footer>
+
+  <script type="module">
+    import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160/build/three.module.js";
+
+    const canvas = document.querySelector("#scene");
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setClearColor(0x050510, 1);
+
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x050510, 0.055);
+
+    const camera = new THREE.PerspectiveCamera(48, window.innerWidth / window.innerHeight, 0.1, 100);
+    camera.position.set(0, 0, 10);
+
+    const world = new THREE.Group();
+    scene.add(world);
+
+    // The wireframe core supplies the scene's central, continuously evolving silhouette.
+    const core = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(2.15, 3),
+      new THREE.MeshBasicMaterial({ color: 0x8e5bff, wireframe: true, transparent: true, opacity: 0.68 })
+    );
+    world.add(core);
+
+    const innerCore = new THREE.Mesh(
+      new THREE.IcosahedronGeometry(1.35, 2),
+      new THREE.MeshBasicMaterial({ color: 0x5dfcff, wireframe: true, transparent: true, opacity: 0.55 })
+    );
+    innerCore.rotation.set(.5, .7, 0);
+    world.add(innerCore);
+
+    const rings = new THREE.Group();
+    const ringMaterial = new THREE.MeshBasicMaterial({ color: 0x5dfcff, transparent: true, opacity: 0.25, side: THREE.DoubleSide });
+    [3.2, 4.05, 4.9].forEach((radius, index) => {
+      const ring = new THREE.Mesh(new THREE.TorusGeometry(radius, .016, 6, 100), ringMaterial);
+      ring.rotation.set(index * .65 + .2, index * .45, index * .7);
+      rings.add(ring);
+    });
+    world.add(rings);
+
+    // A seeded-looking star field gives depth without loading textures or other assets.
+    const particleCount = 1300;
+    const positions = new Float32Array(particleCount * 3);
+    const colors = new Float32Array(particleCount * 3);
+    const cyan = new THREE.Color(0x5dfcff);
+    const violet = new THREE.Color(0xb06cff);
+    for (let i = 0; i < particleCount; i += 1) {
+      const radius = 7 + Math.random() * 18;
+      const theta = Math.random() * Math.PI * 2;
+      const phi = Math.acos(2 * Math.random() - 1);
+      const point = i * 3;
+      positions[point] = radius * Math.sin(phi) * Math.cos(theta);
+      positions[point + 1] = radius * Math.cos(phi);
+      positions[point + 2] = radius * Math.sin(phi) * Math.sin(theta);
+      const color = Math.random() > .5 ? cyan : violet;
+      colors[point] = color.r;
+      colors[point + 1] = color.g;
+      colors[point + 2] = color.b;
+    }
+    const particleGeometry = new THREE.BufferGeometry();
+    particleGeometry.setAttribute("position", new THREE.BufferAttribute(positions, 3));
+    particleGeometry.setAttribute("color", new THREE.BufferAttribute(colors, 3));
+    const particles = new THREE.Points(
+      particleGeometry,
+      new THREE.PointsMaterial({ size: .035, vertexColors: true, transparent: true, opacity: .85, sizeAttenuation: true })
+    );
+    scene.add(particles);
+
+    let scrollProgress = 0;
+    let pointerX = 0;
+    let pointerY = 0;
+
+    function updateScroll() {
+      const scrollableDistance = Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
+      scrollProgress = window.scrollY / scrollableDistance;
+    }
+
+    window.addEventListener("scroll", updateScroll, { passive: true });
+    window.addEventListener("pointermove", (event) => {
+      pointerX = (event.clientX / window.innerWidth - .5) * 2;
+      pointerY = (event.clientY / window.innerHeight - .5) * 2;
+    }, { passive: true });
+
+    window.addEventListener("resize", () => {
+      camera.aspect = window.innerWidth / window.innerHeight;
+      camera.updateProjectionMatrix();
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.setSize(window.innerWidth, window.innerHeight);
+    });
+
+    const clock = new THREE.Clock();
+    function animate() {
+      const elapsed = clock.getElapsedTime();
+      const targetY = -scrollProgress * 8;
+      const targetZ = 10 - scrollProgress * 2.8;
+
+      // Lerp keeps scroll camera movement fluid even when the user moves the scrollbar abruptly.
+      camera.position.y += (targetY - camera.position.y) * .045;
+      camera.position.z += (targetZ - camera.position.z) * .045;
+      camera.position.x += (pointerX * .6 - camera.position.x) * .025;
+      camera.lookAt(0, targetY * .42 + pointerY * -.22, 0);
+
+      if (!reduceMotion) {
+        core.rotation.x = elapsed * .13 + scrollProgress * 2.2;
+        core.rotation.y = elapsed * .19 + scrollProgress * 4;
+        innerCore.rotation.x = -elapsed * .23;
+        innerCore.rotation.z = elapsed * .15;
+        rings.rotation.x = elapsed * .06 + scrollProgress * .8;
+        rings.rotation.y = elapsed * .09;
+        particles.rotation.y = elapsed * .018 + scrollProgress * .6;
+        particles.rotation.x = Math.sin(elapsed * .05) * .12;
+      }
+
+      world.position.y = targetY * .32;
+      world.position.x = Math.sin(scrollProgress * Math.PI * 2) * .7;
+      renderer.render(scene, camera);
+      requestAnimationFrame(animate);
+    }
+
+    updateScroll();
+    animate();
+  </script>
+</body>
+</html>
