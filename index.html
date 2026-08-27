@@ -76,7 +76,7 @@
     .menu-list { display:grid; gap:.55rem; }
     .menu-item { display:grid; grid-template-columns:70px 1fr auto; gap:.8rem; align-items:center; padding:.65rem; border:1px solid transparent; border-radius:10px; background:white; }
     .menu-item:hover { border-color:#dfd4c7; }
-    .dish-preview { display:block; width:70px; height:58px; border-radius:8px; background:radial-gradient(circle at 50% 85%,rgba(24,33,31,.15),transparent 47%),linear-gradient(140deg,#fff6e7,#f3eadf); cursor:grab; }
+    .dish-preview { display:block; width:70px; height:58px; border:0; border-radius:8px; background:radial-gradient(circle at 50% 85%,rgba(24,33,31,.15),transparent 47%),linear-gradient(140deg,#fff6e7,#f3eadf); cursor:pointer; }
     .item-copy strong { display:block; font-size:.84rem; } .item-copy span { color:var(--muted); font-size:.7rem; }
     .item-action { display:grid; justify-items:end; gap:.35rem; } .item-price { font-size:.78rem; font-weight:800; }
     .add { width:25px; height:25px; border:0; border-radius:50%; color:white; background:var(--orange); font-size:1rem; cursor:pointer; } .add:disabled { color:#a8aeaa; background:#e5e8e3; cursor:not-allowed; }
@@ -91,7 +91,10 @@
     .dashboard-columns { display:grid; grid-template-columns:1fr .9fr; gap:1rem; }.panel { padding:1rem; border:1px solid var(--line); border-radius:10px; background:white; }.panel h4 { margin:0 0 .9rem; font-size:.85rem; }.order-row,.availability-row { display:flex; align-items:center; justify-content:space-between; gap:.5rem; padding:.65rem 0; border-bottom:1px solid #f0ebe4; font-size:.75rem; }.order-row:last-child,.availability-row:last-child { border:0; }.order-row small { color:var(--muted); }.order-status { padding:.25rem .4rem; border-radius:999px; color:#9b5811; background:#fff1d5; font-size:.61rem; font-weight:800; }
     .toggle { width:38px; height:22px; padding:2px; border:0; border-radius:999px; background:#cad2cd; cursor:pointer; }.toggle i { display:block; width:18px; height:18px; border-radius:50%; background:white; transition:transform .2s; }.toggle.on { background:var(--green); }.toggle.on i { transform:translateX(16px); }
     .menu-editor { margin-top:1rem; }.menu-editor-head { display:flex; align-items:center; justify-content:space-between; gap:1rem; margin-bottom:.7rem; }.menu-editor p { margin:0; color:var(--muted); font-size:.72rem; }
-    .dish-form { display:grid; grid-template-columns:1.2fr 1.7fr .75fr .8fr .9fr auto; gap:.5rem; }.dish-form input,.dish-form select { min-width:0; padding:.62rem; border:1px solid var(--line); border-radius:7px; color:var(--ink); background:#fffdf8; font-size:.73rem; }.dish-form .button { min-height:auto; padding:.6rem .75rem; font-size:.7rem; white-space:nowrap; }
+    .dish-form { display:grid; grid-template-columns:1.1fr 1.5fr .65fr .7fr .8fr 1.2fr auto; gap:.5rem; }.dish-form input,.dish-form select { min-width:0; padding:.62rem; border:1px solid var(--line); border-radius:7px; color:var(--ink); background:#fffdf8; font-size:.73rem; }.dish-form .button { min-height:auto; padding:.6rem .75rem; font-size:.7rem; white-space:nowrap; }.model-note { margin-top:.65rem !important; }
+    dialog { width:min(760px,calc(100% - 2rem)); padding:0; border:0; border-radius:16px; color:var(--ink); background:var(--paper); box-shadow:0 25px 80px rgba(0,0,0,.38); } dialog::backdrop { background:rgba(15,24,20,.72); backdrop-filter:blur(4px); }
+    .viewer-header { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1rem 1.2rem; border-bottom:1px solid var(--line); }.viewer-header h3 { margin:0; font-size:1.1rem; }.close-viewer { width:32px; height:32px; border:1px solid var(--line); border-radius:8px; color:var(--ink); background:white; cursor:pointer; }
+    .viewer-stage { position:relative; min-height:420px; background:radial-gradient(circle at 50% 45%,#fff9ee,#e9e4d9); }.viewer-canvas { display:block; width:100%; height:420px; touch-action:none; cursor:grab; }.viewer-canvas:active { cursor:grabbing; }.viewer-controls { display:flex; justify-content:center; gap:.6rem; padding:1rem; border-top:1px solid var(--line); }.viewer-controls button { width:42px; height:38px; border:1px solid var(--line); border-radius:8px; color:var(--ink); background:white; font-size:1.1rem; cursor:pointer; }.viewer-help { margin:0; align-self:center; color:var(--muted); font-size:.72rem; }
     .cta { padding:5rem 0; color:white; background:var(--ink); text-align:center; }.cta h2 { margin:0 auto 1rem; }.cta p { max-width:540px; margin:0 auto 1.5rem; color:#b9c4bd; line-height:1.6; }.cta .button { background:var(--orange); }
     footer { display:flex; justify-content:space-between; gap:1rem; padding:1.4rem 0; color:var(--muted); font-size:.73rem; }
     .toast { position:fixed; z-index:30; right:1rem; bottom:1rem; max-width:320px; padding:.9rem 1rem; border-radius:10px; color:white; background:var(--ink); box-shadow:var(--shadow); font-size:.82rem; transform:translateY(140%); transition:transform .25s; }.toast.show { transform:translateY(0); }
@@ -157,7 +160,7 @@
           <div class="app-view" id="dashboard-demo" role="tabpanel">
             <div class="dashboard">
               <aside class="dashboard-sidebar"><strong>Olive Table</strong><span class="active">Overview</span><span>Orders</span><span>Menu</span><span>Settings</span></aside>
-              <div class="dashboard-main" id="dashboard"><h3>Good afternoon, Maria.</h3><p>Here’s how service is going today.</p><div class="metrics"><div class="metric"><small>Direct orders</small><strong>24</strong><span class="up">↑ 20% vs. Tuesday</span></div><div class="metric"><small>Revenue</small><strong>€486</strong><span class="up">↑ 12% vs. Tuesday</span></div><div class="metric"><small>Avg. order</small><strong>€20.25</strong><span class="up">↑ €1.80 vs. Tuesday</span></div></div><div class="dashboard-columns"><section class="panel"><h4>New orders</h4><div class="order-row"><span><strong>#1048</strong><br><small>Table 4 · 2 items</small></span><span class="order-status">NEW</span></div><div class="order-row"><span><strong>#1047</strong><br><small>Takeaway · 3 items</small></span><span class="order-status">NEW</span></div><div class="order-row"><span><strong>#1046</strong><br><small>Table 8 · 1 item</small></span><span class="order-status">NEW</span></div></section><section class="panel"><h4>Menu availability</h4><div id="availability-list"></div></section></div><section class="panel menu-editor"><div class="menu-editor-head"><div><h4>Add a real menu item</h4><p>Choose a 3D dish style; guests can drag the item preview to inspect it.</p></div></div><form class="dish-form" id="dish-form"><input id="dish-name" required maxlength="50" placeholder="Dish name" aria-label="Dish name"><input id="dish-description" required maxlength="100" placeholder="Short description" aria-label="Dish description"><input id="dish-price" required min="0.01" step="0.01" type="number" placeholder="Price" aria-label="Price in euro"><select id="dish-category" aria-label="Category"><option value="mains">Main</option><option value="drinks">Drink</option><option value="dessert">Dessert</option></select><select id="dish-model" aria-label="3D dish style"><option value="pasta">Pasta plate</option><option value="bowl">Bowl</option><option value="drink">Drink</option><option value="dessert">Dessert</option></select><button class="button" type="submit">Add dish</button></form></section></div>
+              <div class="dashboard-main" id="dashboard"><h3>Good afternoon, Maria.</h3><p>Here’s how service is going today.</p><div class="metrics"><div class="metric"><small>Direct orders</small><strong>24</strong><span class="up">↑ 20% vs. Tuesday</span></div><div class="metric"><small>Revenue</small><strong>€486</strong><span class="up">↑ 12% vs. Tuesday</span></div><div class="metric"><small>Avg. order</small><strong>€20.25</strong><span class="up">↑ €1.80 vs. Tuesday</span></div></div><div class="dashboard-columns"><section class="panel"><h4>New orders</h4><div class="order-row"><span><strong>#1048</strong><br><small>Table 4 · 2 items</small></span><span class="order-status">NEW</span></div><div class="order-row"><span><strong>#1047</strong><br><small>Takeaway · 3 items</small></span><span class="order-status">NEW</span></div><div class="order-row"><span><strong>#1046</strong><br><small>Table 8 · 1 item</small></span><span class="order-status">NEW</span></div></section><section class="panel"><h4>Menu availability</h4><div id="availability-list"></div></section></div><section class="panel menu-editor"><div class="menu-editor-head"><div><h4>Add a real menu item</h4><p>Guests can open every dish in a full 360° viewer with zoom controls.</p></div></div><form class="dish-form" id="dish-form"><input id="dish-name" required maxlength="50" placeholder="Dish name" aria-label="Dish name"><input id="dish-description" required maxlength="100" placeholder="Short description" aria-label="Dish description"><input id="dish-price" required min="0.01" step="0.01" type="number" placeholder="Price" aria-label="Price in euro"><select id="dish-category" aria-label="Category"><option value="mains">Main</option><option value="drinks">Drink</option><option value="dessert">Dessert</option></select><select id="dish-model" aria-label="Fallback style"><option value="pasta">Pasta plate</option><option value="bowl">Bowl</option><option value="drink">Drink</option><option value="dessert">Dessert</option></select><input id="dish-model-url" required inputmode="url" placeholder="3D model path (.glb)" aria-label="3D model URL or path"><button class="button" type="submit">Add dish</button></form><p class="model-note">For the deployed site, add each <code>.glb</code> model to a <code>models</code> folder in your GitHub repository, then use a path such as <code>models/pasta.glb</code>. A model path is required for a realistic dish.</p></section></div>
             </div>
           </div>
         </div>
@@ -168,9 +171,14 @@
   </main>
   <footer class="shell"><span>© 2026 ServeFlow</span><span>Simple tools for better service</span></footer>
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog id="dish-viewer" aria-labelledby="viewer-title"><div class="viewer-header"><h3 id="viewer-title">Dish preview</h3><button class="close-viewer" id="close-viewer" aria-label="Close 3D viewer">×</button></div><div class="viewer-stage"><canvas class="viewer-canvas" id="viewer-canvas" aria-label="Interactive 3D dish model"></canvas></div><div class="viewer-controls"><button id="zoom-out" aria-label="Zoom out">−</button><p class="viewer-help">Drag to rotate · Scroll or use buttons to zoom</p><button id="zoom-in" aria-label="Zoom in">+</button></div></dialog>
 
+  <script type="importmap">
+    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160/build/three.module.js" } }
+  </script>
   <script type="module">
     import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160/build/three.module.js";
+    import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.160/examples/jsm/loaders/GLTFLoader.js";
     const starterMenu = [
       { id:"pasta", name:"Truffle tagliatelle", description:"Parmesan, mushroom, fresh truffle", price:16, category:"mains", model:"pasta" },
       { id:"bowl", name:"Roasted garden bowl", description:"Seasonal vegetables, tahini, herbs", price:13, category:"mains", model:"bowl" },
@@ -192,6 +200,16 @@
     const checkout = document.querySelector("#checkout");
     const toast = document.querySelector("#toast");
     let dishViews = [];
+    const modelLoader = new GLTFLoader();
+    const viewerDialog = document.querySelector("#dish-viewer");
+    const viewerCanvas = document.querySelector("#viewer-canvas");
+    const viewerRenderer = new THREE.WebGLRenderer({ canvas:viewerCanvas, alpha:true, antialias:true });
+    const viewerScene = new THREE.Scene();
+    const viewerCamera = new THREE.PerspectiveCamera(38, 1, .1, 30);
+    const viewerDish = new THREE.Group();
+    const viewerState = { rotation:0, zoom:6, active:false, request:0, dragging:false, x:0 };
+    viewerScene.add(viewerDish, new THREE.HemisphereLight(0xffffff, 0x49624e, 2.4));
+    const viewerLight = new THREE.DirectionalLight(0xffffff, 2.5); viewerLight.position.set(3, 5, 6); viewerScene.add(viewerLight);
 
     function isAvailable(item) { return state.availability[item.id] !== false; }
     function escapeHtml(value) {
@@ -208,7 +226,7 @@
     }
     function renderMenu() {
       const items = menu.filter(item => state.filter === "all" || item.category === state.filter);
-      menuList.innerHTML = items.map(item => `<article class="menu-item" data-category="${item.category}"><canvas class="dish-preview" width="140" height="116" aria-label="Interactive 3D view of ${escapeHtml(item.name)}" data-model="${item.model}"></canvas><div class="item-copy"><strong>${escapeHtml(item.name)}${!isAvailable(item) ? " · Sold out" : ""}</strong><span>${escapeHtml(item.description)}</span></div><div class="item-action"><span class="item-price">${euro.format(item.price)}</span><button class="add" aria-label="Add ${escapeHtml(item.name)}" data-add="${item.id}" ${!isAvailable(item) ? "disabled" : ""}>+</button></div></article>`).join("");
+      menuList.innerHTML = items.map(item => `<article class="menu-item" data-category="${item.category}"><canvas class="dish-preview" width="140" height="116" aria-label="Open 3D view of ${escapeHtml(item.name)}" data-model="${item.model}" data-model-url="${escapeHtml(item.modelUrl || "")}" data-view-3d="${item.id}" tabindex="0"></canvas><div class="item-copy"><strong>${escapeHtml(item.name)}${!isAvailable(item) ? " · Sold out" : ""}</strong><span>${escapeHtml(item.description)}</span></div><div class="item-action"><span class="item-price">${euro.format(item.price)}</span><button class="add" aria-label="Add ${escapeHtml(item.name)}" data-add="${item.id}" ${!isAvailable(item) ? "disabled" : ""}>+</button></div></article>`).join("");
       setupDishViews();
     }
     function setupDishViews() {
@@ -242,7 +260,47 @@
     }
     function animateDishes() {
       dishViews.forEach(view => { view.dish.rotation.y = view.rotation += .008; view.renderer.render(view.scene, view.camera); });
+      if (viewerState.active) {
+        viewerDish.rotation.y = viewerState.rotation;
+        viewerCamera.position.set(0, 2.35, viewerState.zoom);
+        viewerCamera.lookAt(0, .3, 0);
+        viewerRenderer.render(viewerScene, viewerCamera);
+      }
       requestAnimationFrame(animateDishes);
+    }
+    function addViewerFallback(model) {
+      const color = { pasta:0xe6993d, bowl:0x4c9b60, drink:0xe96b40, dessert:0xd65b70 }[model] || 0xe6993d;
+      viewerDish.add(new THREE.Mesh(new THREE.CylinderGeometry(1.5, 1.5, .15, 32), new THREE.MeshStandardMaterial({ color:0xf6f1e8, roughness:.7 })));
+      viewerDish.add(new THREE.Mesh(new THREE.SphereGeometry(1.05, 28, 18), new THREE.MeshStandardMaterial({ color, roughness:.65 })).translateY(.35));
+    }
+    function fitViewerModel(model) {
+      const box = new THREE.Box3().setFromObject(model);
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+      const scale = 3.2 / Math.max(size.x, size.y, size.z);
+      model.scale.setScalar(scale);
+      model.position.sub(center.multiplyScalar(scale));
+      viewerDish.add(model);
+    }
+    function openDishViewer(id) {
+      const item = menu.find(entry => entry.id === id);
+      if (!item) return;
+      viewerState.request += 1;
+      const request = viewerState.request;
+      viewerState.rotation = 0; viewerState.zoom = 6; viewerDish.clear();
+      document.querySelector("#viewer-title").textContent = `${item.name} — 3D view`;
+      const rect = viewerCanvas.getBoundingClientRect();
+      viewerRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      viewerRenderer.setSize(rect.width, rect.height, false);
+      viewerCamera.aspect = rect.width / rect.height; viewerCamera.updateProjectionMatrix();
+      viewerState.active = true; viewerDialog.showModal();
+      if (!item.modelUrl) { addViewerFallback(item.model); showToast("This demo dish uses a placeholder. Add its .glb model URL in the owner dashboard for a realistic view."); return; }
+      modelLoader.load(item.modelUrl, gltf => {
+        if (request !== viewerState.request) return;
+        fitViewerModel(gltf.scene);
+      }, undefined, () => {
+        if (request === viewerState.request) { addViewerFallback(item.model); showToast("The 3D model could not load. Check that its .glb URL is public and correct."); }
+      });
     }
     function renderCart() {
       const entries = Object.entries(state.cart).filter(([, quantity]) => quantity > 0);
@@ -261,9 +319,15 @@
       const add = event.target.closest("[data-add]");
       const change = event.target.closest("[data-change]");
       const toggle = event.target.closest("[data-toggle]");
+      const preview = event.target.closest("[data-view-3d]");
       if (add) { state.cart[add.dataset.add] = (state.cart[add.dataset.add] || 0) + 1; render(); }
       if (change) { const id = change.dataset.change; state.cart[id] = Math.max(0, (state.cart[id] || 0) + Number(change.dataset.delta)); render(); }
       if (toggle) { const id = toggle.dataset.toggle; state.availability[id] = !isAvailable(menu.find(item => item.id === id)); render(); showToast(`${menu.find(item => item.id === id).name} is now ${state.availability[id] ? "available" : "sold out"}.`); }
+      if (preview) openDishViewer(preview.dataset.view3d);
+    });
+    document.addEventListener("keydown", event => {
+      const preview = event.target.closest("[data-view-3d]");
+      if (preview && (event.key === "Enter" || event.key === " ")) { event.preventDefault(); openDishViewer(preview.dataset.view3d); }
     });
     document.querySelectorAll(".category").forEach(button => button.addEventListener("click", () => {
       state.filter = button.dataset.filter; document.querySelectorAll(".category").forEach(entry => entry.classList.toggle("active", entry === button)); renderMenu();
@@ -281,9 +345,18 @@
       const description = document.querySelector("#dish-description").value.trim();
       const price = Number(document.querySelector("#dish-price").value);
       if (!name || !description || !Number.isFinite(price) || price <= 0) return;
-      menu.push({ id:`custom-${crypto.randomUUID()}`, name, description, price, category:document.querySelector("#dish-category").value, model:document.querySelector("#dish-model").value });
+      menu.push({ id:`custom-${crypto.randomUUID()}`, name, description, price, category:document.querySelector("#dish-category").value, model:document.querySelector("#dish-model").value, modelUrl:document.querySelector("#dish-model-url").value.trim() });
       event.target.reset(); render(); showToast(`${name} is now live in the guest menu.`);
     });
+    function adjustViewerZoom(amount) { viewerState.zoom = Math.max(2.5, Math.min(12, viewerState.zoom + amount)); }
+    document.querySelector("#close-viewer").addEventListener("click", () => viewerDialog.close());
+    viewerDialog.addEventListener("close", () => { viewerState.active = false; viewerState.request += 1; viewerDish.clear(); });
+    document.querySelector("#zoom-in").addEventListener("click", () => adjustViewerZoom(-.7));
+    document.querySelector("#zoom-out").addEventListener("click", () => adjustViewerZoom(.7));
+    viewerCanvas.addEventListener("wheel", event => { event.preventDefault(); adjustViewerZoom(event.deltaY * .006); }, { passive:false });
+    viewerCanvas.addEventListener("pointerdown", event => { viewerState.dragging = true; viewerState.x = event.clientX; viewerCanvas.setPointerCapture(event.pointerId); });
+    viewerCanvas.addEventListener("pointermove", event => { if (viewerState.dragging) { viewerState.rotation += (event.clientX - viewerState.x) * .012; viewerState.x = event.clientX; } });
+    viewerCanvas.addEventListener("pointerup", () => { viewerState.dragging = false; });
     checkout.addEventListener("click", () => {
       const lines = Object.entries(state.cart).filter(([, quantity]) => quantity > 0).map(([id, quantity]) => `${quantity}x ${menu.find(item => item.id === id).name}`).join("\n");
       const total = Object.entries(state.cart).reduce((sum, [id, quantity]) => sum + menu.find(item => item.id === id).price * quantity, 0);
